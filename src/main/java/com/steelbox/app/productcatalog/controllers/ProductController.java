@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,12 @@ public class ProductController {
 
     @GetMapping("/products")
     public List<ProductDto> getAllProducts() {
-        return null;
+        List<ProductDto> productDtoList = new ArrayList<>();
+        List<Product> products = productService.getAllProducts();
+        for (Product product : products) {
+            productDtoList.add(getProductDto(product));
+        }
+        return productDtoList;
     }
 
     @GetMapping("/products/{id}")
@@ -30,6 +36,15 @@ public class ProductController {
             throw new IllegalArgumentException("ProductId is invalid");
         }
         Product product = productService.getProductById(id);
+        return ResponseEntity.ok(getProductDto(product));
+    }
+
+    @PostMapping("/products")
+    public ProductDto createProduct(@RequestBody ProductDto productDto) {
+        return null;
+    }
+
+    private ProductDto getProductDto(Product product) {
         ProductDto productDto = new ProductDto();
         productDto.setId(product.getId());
         productDto.setName(product.getName());
@@ -37,11 +52,6 @@ public class ProductController {
         productDto.setImageUrl(product.getImageUrl());
         productDto.setCategoryName(product.getCategory().getName());
         productDto.setPrice(product.getPrice());
-        return ResponseEntity.ok(productDto);
-    }
-
-    @PostMapping("/products")
-    public ProductDto createProduct(@RequestBody ProductDto productDto) {
-        return null;
+        return productDto;
     }
 }
