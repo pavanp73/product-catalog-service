@@ -11,8 +11,6 @@ public class ErrorMessage {
     private String stackTrace;
     private int code;
 
-    public ErrorMessage() {}
-
     public ErrorMessage(String message, String stackTrace, int code) {
         this.message = message;
         this.stackTrace = stackTrace;
