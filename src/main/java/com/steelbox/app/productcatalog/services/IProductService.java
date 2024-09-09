@@ -7,6 +7,10 @@ import java.util.List;
 public interface IProductService {
 
     Product getProductById(Long id) throws Exception;
+
     Product createProduct(Product product);
+
+    Product updateProduct(Long id, Product product);
+
     List<Product> getAllProducts();
 }

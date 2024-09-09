@@ -1,14 +1,13 @@
 package com.steelbox.app.productcatalog.services;
 
+import com.steelbox.app.productcatalog.client.FakeStoreApiClient;
 import com.steelbox.app.productcatalog.dtos.FakeStoreProductDto;
 import com.steelbox.app.productcatalog.exceptions.NotFoundException;
 import com.steelbox.app.productcatalog.models.Category;
 import com.steelbox.app.productcatalog.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,19 +15,19 @@ import java.util.List;
 @Service
 public class FakeStoreProductServiceImpl implements IProductService {
 
-    private final RestTemplateBuilder restTemplateBuilder;
+    private final FakeStoreApiClient fakeStoreApiClient;
 
     @Autowired
-    public FakeStoreProductServiceImpl(RestTemplateBuilder restTemplateBuilder) {
-        this.restTemplateBuilder = restTemplateBuilder;
+    public FakeStoreProductServiceImpl(FakeStoreApiClient fakeStoreApiClient) {
+        this.fakeStoreApiClient = fakeStoreApiClient;
     }
 
     @Override
     public Product getProductById(Long id) throws Exception {
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductDto> fakeStoreProductDtoResponseEntity 
-                = restTemplate.getForEntity("https://fakestoreapi.com/products/{id}", FakeStoreProductDto.class, id);
-        if (fakeStoreProductDtoResponseEntity.getStatusCode().is2xxSuccessful() 
+        ResponseEntity<FakeStoreProductDto> fakeStoreProductDtoResponseEntity =
+                fakeStoreApiClient.getProductById(id);
+
+        if (fakeStoreProductDtoResponseEntity.getStatusCode().is2xxSuccessful()
                 && fakeStoreProductDtoResponseEntity.getBody() != null) {
             return getProduct(fakeStoreProductDtoResponseEntity.getBody());
         }
@@ -41,14 +40,33 @@ public class FakeStoreProductServiceImpl implements IProductService {
 
     @Override
     public Product createProduct(Product product) {
+        ResponseEntity<FakeStoreProductDto> fakeStoreProductDtoResponseEntity =
+                fakeStoreApiClient.createProduct(getFakeStoreProductDto(product));
+
+        if (fakeStoreProductDtoResponseEntity.getStatusCode().is2xxSuccessful()
+                && fakeStoreProductDtoResponseEntity.getBody() != null) {
+            return getProduct(fakeStoreProductDtoResponseEntity.getBody());
+        }
         return null;
     }
 
     @Override
+    public Product updateProduct(Long id, Product product) {
+        ResponseEntity<FakeStoreProductDto> fakeStoreProductDtoResponseEntity =
+                fakeStoreApiClient.updateProduct(id, getFakeStoreProductDto(product));
+
+        if (fakeStoreProductDtoResponseEntity.getStatusCode().is2xxSuccessful()
+                && fakeStoreProductDtoResponseEntity.getBody() != null) {
+            return getProduct(fakeStoreProductDtoResponseEntity.getBody());
+        }
+        return null;
+    }
+
+
+    @Override
     public List<Product> getAllProducts() {
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductDto[]> fakeStoreProductDtoListResponseEntity
-                = restTemplate.getForEntity("https://fakestoreapi.com/products", FakeStoreProductDto[].class);
+        ResponseEntity<FakeStoreProductDto[]> fakeStoreProductDtoListResponseEntity = fakeStoreApiClient.getAllProducts();
+
         if (fakeStoreProductDtoListResponseEntity.getStatusCode().is2xxSuccessful()
                 && fakeStoreProductDtoListResponseEntity.getBody() != null) {
             List<Product> products = new ArrayList<>();
@@ -73,5 +91,18 @@ public class FakeStoreProductServiceImpl implements IProductService {
             product.setCategory(category);
         }
         return product;
+    }
+
+    private FakeStoreProductDto getFakeStoreProductDto(Product product) {
+        FakeStoreProductDto fakeStoreProductDto = new FakeStoreProductDto();
+        if (product.getId() != null) {
+            fakeStoreProductDto.setId(product.getId());
+        }
+        fakeStoreProductDto.setTitle(product.getName());
+        fakeStoreProductDto.setDescription(product.getDescription());
+        fakeStoreProductDto.setPrice(product.getPrice());
+        fakeStoreProductDto.setImage(product.getImageUrl());
+        fakeStoreProductDto.setCategory(product.getCategory().getName());
+        return fakeStoreProductDto;
     }
 }

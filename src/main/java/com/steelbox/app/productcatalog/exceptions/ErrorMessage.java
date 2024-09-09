@@ -1,16 +1,26 @@
 package com.steelbox.app.productcatalog.exceptions;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class ErrorMessage {
 
     private String message;
+    private String stackTrace;
     private int code;
+
+    public ErrorMessage() {}
+
+    public ErrorMessage(String message, String stackTrace, int code) {
+        this.message = message;
+        this.stackTrace = stackTrace;
+        this.code = code;
+    }
+
+    public ErrorMessage(String message, int code) {
+        this.message = message;
+        this.code = code;
+    }
 }
