@@ -57,4 +57,13 @@ public class FakeStoreApiClient implements GenericClient {
                 id
         );
     }
+
+    public ResponseEntity<String[]> getAllCategories() {
+        return requestForEntity(
+                API_BASE_URL + "/categories",
+                null,
+                HttpMethod.GET,
+                String[].class
+        );
+    }
 }
