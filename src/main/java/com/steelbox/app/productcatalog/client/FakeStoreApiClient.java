@@ -11,59 +11,26 @@ public class FakeStoreApiClient implements GenericClient {
     private static final String API_BASE_URL = "https://fakestoreapi.com/products";
 
     public ResponseEntity<FakeStoreProductDto> createProduct(FakeStoreProductDto fakeStoreProductDto) {
-        return requestForEntity(
-                API_BASE_URL,
-                fakeStoreProductDto,
-                HttpMethod.POST,
-                FakeStoreProductDto.class
-        );
+        return requestForEntity(API_BASE_URL, fakeStoreProductDto, HttpMethod.POST, FakeStoreProductDto.class);
     }
 
     public ResponseEntity<FakeStoreProductDto> updateProduct(Long id, FakeStoreProductDto fakeStoreProductDto) {
-        return requestForEntity(
-                API_BASE_URL + "/{id}",
-                fakeStoreProductDto,
-                HttpMethod.PUT,
-                FakeStoreProductDto.class,
-                id
-        );
+        return requestForEntity(API_BASE_URL + "/{id}", fakeStoreProductDto, HttpMethod.PUT, FakeStoreProductDto.class, id);
     }
 
     public ResponseEntity<FakeStoreProductDto> getProductById(Long id) {
-        return requestForEntity(
-                API_BASE_URL + "/{id}",
-                null,
-                HttpMethod.GET,
-                FakeStoreProductDto.class,
-                id
-        );
+        return requestForEntity(API_BASE_URL + "/{id}", HttpMethod.GET, FakeStoreProductDto.class, id);
     }
 
     public ResponseEntity<FakeStoreProductDto[]> getAllProducts() {
-        return requestForEntity(
-                API_BASE_URL,
-                null,
-                HttpMethod.GET,
-                FakeStoreProductDto[].class
-        );
+        return requestForEntity(API_BASE_URL, HttpMethod.GET, FakeStoreProductDto[].class);
     }
 
     public ResponseEntity<FakeStoreProductDto> deleteProduct(Long id) {
-        return requestForEntity(
-                API_BASE_URL + "/{id}",
-                null,
-                HttpMethod.DELETE,
-                FakeStoreProductDto.class,
-                id
-        );
+        return requestForEntity(API_BASE_URL + "/{id}", HttpMethod.DELETE, FakeStoreProductDto.class, id);
     }
 
     public ResponseEntity<String[]> getAllCategories() {
-        return requestForEntity(
-                API_BASE_URL + "/categories",
-                null,
-                HttpMethod.GET,
-                String[].class
-        );
+        return requestForEntity(API_BASE_URL + "/categories", HttpMethod.GET, String[].class);
     }
 }

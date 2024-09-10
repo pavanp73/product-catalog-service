@@ -12,6 +12,13 @@ import org.springframework.web.client.RestTemplate;
 public interface GenericClient {
 
     default <T> ResponseEntity<T> requestForEntity(String url,
+                                                   HttpMethod httpMethod,
+                                                   Class<T> responseType,
+                                                   Object... uriVariables) throws RestClientException {
+        return requestForEntity(url, null, httpMethod, responseType, uriVariables);
+    }
+
+    default <T> ResponseEntity<T> requestForEntity(String url,
                                                   @Nullable Object request,
                                                   HttpMethod httpMethod,
                                                   Class<T> responseType,
