@@ -47,4 +47,14 @@ public class FakeStoreApiClient implements GenericClient {
                 FakeStoreProductDto[].class
         );
     }
+
+    public ResponseEntity<FakeStoreProductDto> deleteProduct(Long id) {
+        return requestForEntity(
+                API_BASE_URL + "/{id}",
+                null,
+                HttpMethod.DELETE,
+                FakeStoreProductDto.class,
+                id
+        );
+    }
 }

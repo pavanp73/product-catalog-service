@@ -1,6 +1,7 @@
 package com.steelbox.app.productcatalog.controllers;
 
 import com.steelbox.app.productcatalog.dtos.ProductDto;
+import com.steelbox.app.productcatalog.exceptions.NotFoundException;
 import com.steelbox.app.productcatalog.models.Category;
 import com.steelbox.app.productcatalog.models.Product;
 import com.steelbox.app.productcatalog.services.IProductService;
@@ -56,6 +57,18 @@ public class ProductController {
             throw new IllegalArgumentException("ProductId is invalid");
         }
         Product product = productService.updateProduct(id, getProduct(productDto));
+        return getProductDto(product);
+    }
+
+    @DeleteMapping("/{id}")
+    public ProductDto deleteProduct(@PathVariable Long id) throws Exception {
+        if (id <= 0) {
+            throw new IllegalArgumentException("ProductId is invalid");
+        }
+        Product product = productService.deleteProduct(id);
+        if (product == null) {
+            throw new NotFoundException("productId: " + id + " was not found");
+        }
         return getProductDto(product);
     }
 

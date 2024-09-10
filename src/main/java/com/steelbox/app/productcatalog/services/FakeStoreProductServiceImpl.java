@@ -62,6 +62,18 @@ public class FakeStoreProductServiceImpl implements IProductService {
         return null;
     }
 
+    @Override
+    public Product deleteProduct(Long id) {
+        ResponseEntity<FakeStoreProductDto> fakeStoreProductDtoResponseEntity =
+                fakeStoreApiClient.deleteProduct(id);
+
+        if (fakeStoreProductDtoResponseEntity.getStatusCode().is2xxSuccessful()
+                && fakeStoreProductDtoResponseEntity.getBody() != null) {
+            return getProduct(fakeStoreProductDtoResponseEntity.getBody());
+        }
+        return null;
+    }
+
 
     @Override
     public List<Product> getAllProducts() {
